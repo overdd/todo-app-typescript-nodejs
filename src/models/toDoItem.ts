@@ -1,8 +1,8 @@
 export class ToDoItem {
-    constructor(public id: string, public task: string, public complete: boolean = false) {
+    constructor(public id: number, public task: string, public isDone: boolean = false) {
     }
     
     printItem(): void {
-        console.log(`${this.task} : ${this.complete ? "done" : "not done"}`);
+        console.log(`${this.task} : ${this.isDone ? "done" : "not done"}`);
     }
 }
