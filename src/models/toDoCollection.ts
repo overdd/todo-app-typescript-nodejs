@@ -2,22 +2,26 @@ import { ToDoItem } from "./toDoItem";
 
 export class ToDoCollection {
     private nextId = 0;
-
-    constructor(public author: string, public toDoItems: ToDoItem[] = []) {
+    private itemMap = new Map<number, ToDoItem>();
+    constructor(public author: string) {
     }
 
-    addItem(task: string): number {
-        const newToDoItem = new ToDoItem(this.nextId++, task)
-        this.toDoItems.push(newToDoItem);
+    addItem(task: string, isDone = false): number {
+        const newToDoItem = new ToDoItem(this.nextId++, task, isDone)
+        this.itemMap.set(newToDoItem.id, newToDoItem);
         return newToDoItem.id;
     }
 
     getItemById(id: number): ToDoItem | void {
-        const foundItem = this.toDoItems.find(item => item.id === id); 
+        const foundItem = this.itemMap.get(id); 
         if (!foundItem) {
             console.log(`No such item: ${id}`);
         }
         return foundItem;
+    }
+
+    getAllItems(includeDone: boolean) {
+        return [...this.itemMap.values()].filter(item => includeDone || !item.isDone);
     }
 
     markAsDone(id: number) {
