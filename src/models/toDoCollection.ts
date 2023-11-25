@@ -33,4 +33,8 @@ export class ToDoCollection {
         const toDoItem: ToDoItem | void = this.getItemById(id);
         toDoItem ? toDoItem.isDone = false : toDoItem ;
     }
+
+    removeDoneItems() {
+        this.itemMap.forEach(item => item.isDone ? this.itemMap.delete(item.id) : item);
+    }
 }
