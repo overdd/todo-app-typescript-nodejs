@@ -20,7 +20,7 @@ export class ToDoCollection {
         return foundItem;
     }
 
-    getAllItems(includeDone: boolean) {
+    getAllItems(includeDone: boolean): ToDoItem[] {
         return [...this.itemMap.values()].filter(item => includeDone || !item.isDone);
     }
 

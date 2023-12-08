@@ -6,7 +6,7 @@ export declare class ToDoCollection {
     constructor(author: string);
     addItem(task: string, isDone?: boolean): number;
     getItemById(id: number): ToDoItem | void;
-    getAllItems(includeDone: boolean): any[];
+    getAllItems(includeDone: boolean): ToDoItem[];
     markAsDone(id: number): void;
     markAsNotDone(id: number): void;
     removeDoneItems(): void;
