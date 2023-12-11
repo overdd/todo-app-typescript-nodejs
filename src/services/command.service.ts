@@ -33,7 +33,6 @@ class CommandService {
       case ".exit":
         shutdownService.sayBye();
         break;
-
       case "name":
         firstParameter === ""
           ? console.log(`Try again. Name shouldn't be blank`)
