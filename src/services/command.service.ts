@@ -60,14 +60,12 @@ class CommandService {
           : startupService.sayHello();
         console.log(`New task was added: ${firstParameter}, id: ${id!}`);
         break;
-
       case "get":
         id = parseNumber(firstParameter);
         Number.isNaN(id)
           ? console.log(`Wrong task id. Try again`)
           : this.toDoApplication?.toDoCollection.getItemById(id!);
         break;
-
       case "getall":
         firstParameter?.toLowerCase() == "true"
           ? (firstParameter = true)
