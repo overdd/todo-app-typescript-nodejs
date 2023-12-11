@@ -23,7 +23,7 @@ class CommandService {
     const command = inputArray[0];
     let firstParameter: string | boolean = inputArray[1];
     let secondParameter: string | boolean = inputArray[2];
-
+    let id: number;
     await this.check(command);
 
     switch (command) {
@@ -61,8 +61,16 @@ class CommandService {
         );
         break;
       case "markdone":
-        const id = parseNumber(firstParameter);
-        Number.isNaN(id) ? console.log(`Wrong task id. Try again`) : this.toDoApplication?.toDoCollection.markAsDone(id!);
+        id = parseNumber(firstParameter);
+        Number.isNaN(id)
+          ? console.log(`Wrong task id. Try again`)
+          : this.toDoApplication?.toDoCollection.markAsDone(id!);
+        break;
+      case "marknotdone":
+        id = parseNumber(firstParameter);
+        Number.isNaN(id)
+          ? console.log(`Wrong task id. Try again`)
+          : this.toDoApplication?.toDoCollection.markAsNotDone(id!);
         break;
       default:
         console.log(`Unknown command. Try again`);

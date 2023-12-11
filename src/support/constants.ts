@@ -1,1 +1,8 @@
-export const COMMANDS = [".exit", "name", "add", "getall", "markdone"];
+export const COMMANDS = [
+  ".exit",
+  "name",
+  "add",
+  "getall",
+  "markdone",
+  "marknotdone",
+];

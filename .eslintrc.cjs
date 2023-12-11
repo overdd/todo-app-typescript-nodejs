@@ -13,6 +13,6 @@ module.exports = {
   ],
   "ignorePatterns": ["dist/**/*", "node_modules/**/*"],
   rules: {
-    'no-console': 'warn',
+    'no-console': 'off',
   },
 };
