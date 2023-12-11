@@ -52,6 +52,12 @@ class CommandService {
           : startupService.sayHello();
         console.log(`New task was added: ${firstParameter}`);
         break;
+      case "get":
+        id = parseNumber(firstParameter);
+        Number.isNaN(id)
+          ? console.log(`Wrong task id. Try again`)
+          : this.toDoApplication?.toDoCollection.getItemById(id!);
+        break;
       case "getall":
         firstParameter?.toLowerCase() == "true"
           ? (firstParameter = true)
@@ -71,6 +77,9 @@ class CommandService {
         Number.isNaN(id)
           ? console.log(`Wrong task id. Try again`)
           : this.toDoApplication?.toDoCollection.markAsNotDone(id!);
+        break;
+      case "removedone":
+        this.toDoApplication?.toDoCollection.removeDoneItems();
         break;
       default:
         console.log(`Unknown command. Try again`);
