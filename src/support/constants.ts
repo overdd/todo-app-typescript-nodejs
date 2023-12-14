@@ -7,4 +7,6 @@ export const COMMANDS = [
   "markdone",
   "marknotdone",
   "removedone",
+  "markimportant",
+  "getimportant",
 ];

@@ -1,5 +1,5 @@
 import { ToDoApplication } from "../app/toDoApplication";
-import { parseNumber } from "../support/helper";
+import { parseNumber, parseDate } from "../support/helper";
 import { COMMANDS } from "../support/constants";
 import shutdownService from "./shutdown.service";
 import startupService from "./startup.service";
@@ -22,14 +22,18 @@ class CommandService {
     const inputArray = userInput.split(" ");
     const command = inputArray[0];
     let firstParameter: string | boolean = inputArray[1];
-    let secondParameter: string | boolean = inputArray[2];
+    const secondParameter: string = inputArray[2];
+    let thirdParameter: string | boolean = inputArray[3];
     let id: number;
+    let formattedDate: Date;
+
     await this.check(command);
 
     switch (command) {
       case ".exit":
         shutdownService.sayBye();
         break;
+
       case "name":
         firstParameter === ""
           ? console.log(`Try again. Name shouldn't be blank`)
@@ -40,24 +44,31 @@ class CommandService {
           )}`,
         );
         break;
+
       case "add":
-        secondParameter?.toLowerCase() === "true"
-          ? (secondParameter = true)
-          : (secondParameter = false);
+        thirdParameter?.toLowerCase() === "true"
+          ? (thirdParameter = true)
+          : (thirdParameter = false);
+        secondParameter
+          ? (formattedDate = parseDate(secondParameter))
+          : (formattedDate = new Date("01.01.2099"));
         this.toDoApplication
-          ? this.toDoApplication.toDoCollection.addItem(
+          ? id = this.toDoApplication.toDoCollection.addItem(
               firstParameter,
-              secondParameter,
+              formattedDate,
+              thirdParameter,
             )
           : startupService.sayHello();
-        console.log(`New task was added: ${firstParameter}`);
+        console.log(`New task was added: ${firstParameter}, id: ${id!}`);
         break;
+
       case "get":
         id = parseNumber(firstParameter);
         Number.isNaN(id)
           ? console.log(`Wrong task id. Try again`)
           : this.toDoApplication?.toDoCollection.getItemById(id!);
         break;
+
       case "getall":
         firstParameter?.toLowerCase() == "true"
           ? (firstParameter = true)
@@ -66,21 +77,42 @@ class CommandService {
           this.toDoApplication!.toDoCollection.getAllItems(firstParameter),
         );
         break;
+
       case "markdone":
         id = parseNumber(firstParameter);
         Number.isNaN(id)
           ? console.log(`Wrong task id. Try again`)
           : this.toDoApplication?.toDoCollection.markAsDone(id!);
+          console.log(`Task ${id} marked as done`);
         break;
+
       case "marknotdone":
         id = parseNumber(firstParameter);
         Number.isNaN(id)
           ? console.log(`Wrong task id. Try again`)
           : this.toDoApplication?.toDoCollection.markAsNotDone(id!);
+        console.log(`Task ${id} marked as not done`);
         break;
+
       case "removedone":
         this.toDoApplication?.toDoCollection.removeDoneItems();
+        console.log(`Done tasks are removed`)
         break;
+
+      case "markimportant":
+        id = parseNumber(firstParameter);
+        Number.isNaN(id)
+          ? console.log(`Wrong task id. Try again`)
+          : this.toDoApplication?.toDoCollection.markImportant(id!);
+        console.log(`Task ${id} marked as important`);
+        break;
+
+      case "getimportant":
+        console.log(
+          this.toDoApplication!.toDoCollection.getImportant(),
+        );
+        break;
+
       default:
         console.log(`Unknown command. Try again`);
     }

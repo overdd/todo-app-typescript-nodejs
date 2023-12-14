@@ -5,8 +5,8 @@ export class ToDoCollection {
   private itemMap = new Map<number, ToDoItem>();
   constructor(public author: string) {}
 
-  addItem(task: string, isDone = false): number {
-    const newToDoItem = new ToDoItem(this.nextId++, task, isDone);
+  addItem(task: string, dueDate?: Date, isDone = false): number {
+    const newToDoItem = new ToDoItem(this.nextId++, task, dueDate, isDone);
     this.itemMap.set(newToDoItem.id, newToDoItem);
     return newToDoItem.id;
   }
@@ -38,6 +38,17 @@ export class ToDoCollection {
   removeDoneItems() {
     this.itemMap.forEach((item) =>
       item.isDone ? this.itemMap.delete(item.id) : item,
+    );
+  }
+
+  markImportant(id: number){
+    const toDoItem: ToDoItem | void = this.getItemById(id);
+    toDoItem ? (toDoItem.isImportant = true) : toDoItem;
+  }
+
+  getImportant(): ToDoItem[] {
+    return [...this.itemMap.values()].filter(
+      (item) => item.isImportant
     );
   }
 }
