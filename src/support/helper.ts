@@ -24,7 +24,7 @@ export function parseDate(dateString: string): Date {
     const day = formattedDate.getDate();
     const month = formattedDate.getMonth();
     const year = formattedDate.getFullYear();
-    formattedDate =  new Date(`${day}.${month}.${year}`);
+    formattedDate = new Date(`${day}.${month}.${year}`);
   } catch (error) {
     console.log("Not a valid Date input");
     formattedDate = new Date("01.01.1970");

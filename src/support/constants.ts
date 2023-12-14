@@ -9,4 +9,5 @@ export const COMMANDS = [
   "removedone",
   "markimportant",
   "getimportant",
+  "export",
 ];

@@ -53,11 +53,11 @@ class CommandService {
           ? (formattedDate = parseDate(secondParameter))
           : (formattedDate = new Date("01.01.2099"));
         this.toDoApplication
-          ? id = this.toDoApplication.toDoCollection.addItem(
+          ? (id = this.toDoApplication.toDoCollection.addItem(
               firstParameter,
               formattedDate,
               thirdParameter,
-            )
+            ))
           : startupService.sayHello();
         console.log(`New task was added: ${firstParameter}, id: ${id!}`);
         break;
@@ -83,7 +83,7 @@ class CommandService {
         Number.isNaN(id)
           ? console.log(`Wrong task id. Try again`)
           : this.toDoApplication?.toDoCollection.markAsDone(id!);
-          console.log(`Task ${id} marked as done`);
+        console.log(`Task ${id} marked as done`);
         break;
 
       case "marknotdone":
@@ -96,7 +96,7 @@ class CommandService {
 
       case "removedone":
         this.toDoApplication?.toDoCollection.removeDoneItems();
-        console.log(`Done tasks are removed`)
+        console.log(`Done tasks are removed`);
         break;
 
       case "markimportant":
@@ -108,9 +108,11 @@ class CommandService {
         break;
 
       case "getimportant":
-        console.log(
-          this.toDoApplication!.toDoCollection.getImportant(),
-        );
+        console.log(this.toDoApplication!.toDoCollection.getImportant());
+        break;
+
+      case "export":
+        this.toDoApplication?.exportToJson();
         break;
 
       default:

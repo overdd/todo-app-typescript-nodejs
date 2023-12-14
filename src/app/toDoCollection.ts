@@ -41,14 +41,12 @@ export class ToDoCollection {
     );
   }
 
-  markImportant(id: number){
+  markImportant(id: number) {
     const toDoItem: ToDoItem | void = this.getItemById(id);
     toDoItem ? (toDoItem.isImportant = true) : toDoItem;
   }
 
   getImportant(): ToDoItem[] {
-    return [...this.itemMap.values()].filter(
-      (item) => item.isImportant
-    );
+    return [...this.itemMap.values()].filter((item) => item.isImportant);
   }
 }
