@@ -1,21 +1,55 @@
-import readline from "node:readline";
-import { stdin as input, stdout as output } from "node:process";
-import commandService from "./services/command.service";
-import startUpService from "./services/startup.service";
-import shutdownService from "./services/shutdown.service";
+import select from "@inquirer/select";
+import { ToDoApplication } from "./app/toDoApplication";
+import input from "@inquirer/input";
 
-const main = () => {
-  const rl = readline.createInterface({ input, output });
+let toDoApplication: ToDoApplication;
+let intake: string;
 
-  startUpService.sayHello();
+function displayToDoList(): void {
+  if (toDoApplication) {
+    console.log(
+      `${
+        toDoApplication.toDoCollection.author
+      }'s ToDo app. Things to be done: ${toDoApplication.toDoCollection.getAllItems()}`,
+    );
+  } else {
+    console.log("ToDo application is not created, please create one.");
+  }
+}
 
-  rl.on("line", async (data) => {
-    await commandService.executeCommand(data);
+async function prompt(): Promise<void> {
+  console.clear();
+  displayToDoList();
+  const answer = await select({
+    message: `Select an option:`,
+    choices: [
+      {
+        name: "Start",
+        value: "start",
+        description: "Start a new ToDO application",
+        disabled: toDoApplication?.toDoCollection?.author ? true : false,
+      },
+      {
+        name: "Quit",
+        value: "quit",
+        description: "Quit from ToDo application",
+      },
+    ],
   });
+  switch (answer) {
+    case "start":
+      await input({ message: "What is your name?" });
+      toDoApplication = new ToDoApplication(intake);
+      break;
+    case "quit":
+      break;
+  }
+  if (answer === "quit") {
+    console.log("Thank you for using the To-Do application.");
+    process.exit();
+  } else {
+    prompt();
+  }
+}
 
-  rl.on("SIGINT", () => {
-    shutdownService.sayBye();
-  });
-};
-
-main();
+prompt();

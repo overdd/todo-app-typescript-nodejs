@@ -11,3 +11,11 @@ export const COMMANDS = [
   "getimportant",
   "export",
 ];
+
+export const INQUIRERCOMMANDS: unknown = [
+  {
+    name: "quit",
+    value: "quit",
+    description: "Quit the ToDo application.",
+  },
+];
