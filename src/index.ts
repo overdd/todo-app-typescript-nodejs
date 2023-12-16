@@ -88,7 +88,7 @@ async function prompt(): Promise<void> {
       },
     ],
   });
-
+  
   switch (answer) {
     case "start":
       intake = await input({ message: MESSAGES.WHATSYOURNAME });
