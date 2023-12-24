@@ -9,8 +9,10 @@ export class ToDoItem {
 
   printItem(): void {
     console.log(
-      `${this.task} - ${this.dueDate ? this.dueDate : "no due date"}: ${
-        this.isDone ? "done" : "not done"
+      `${this.id}: ${this.task} - ${
+        this.dueDate ? this.dueDate.toDateString() : "no due date"
+      }: ${this.isDone ? "done" : "not done"}: ${
+        this.isImportant ? "important" : "not important"
       }`,
     );
   }
