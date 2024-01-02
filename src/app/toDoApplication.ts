@@ -8,12 +8,12 @@ export class ToDoApplication {
     this.toDoCollection = new ToDoCollection(author);
   }
 
-  exportToJson(): void {
+  async exportToJson(): Promise<void> {
     const toDoItems = this.toDoCollection.getAllItems(true);
     const fileName = `todo_items.json`;
     try {
       fs.writeFileSync(fileName, JSON.stringify(this.toDoCollection) + "\n");
-      toDoItems.forEach((item) => {
+      (await toDoItems).forEach((item) => {
         fs.appendFileSync(fileName, JSON.stringify(item) + "\n");
       });
       console.log(`ToDo items exported to ${fileName}`);
