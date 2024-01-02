@@ -4,4 +4,5 @@ export declare class ToDoItem {
   isDone: boolean;
   constructor(id: number, task: string, isDone?: boolean);
   printItem(): void;
+  fromRow(): ToDoItem;
 }
