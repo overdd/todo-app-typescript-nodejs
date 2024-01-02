@@ -1,52 +1,58 @@
+import Database from "better-sqlite3";
+// import { ToDoItem } from "./toDoItem";
+import sqlite from "better-sqlite3";
+import dbHandler from "../db/handler.db";
 import { ToDoItem } from "./toDoItem";
 
 export class ToDoCollection {
-  private nextId = 0;
-  private itemMap = new Map<number, ToDoItem>();
-  constructor(public author: string) {}
-
-  addItem(task: string, dueDate?: Date, isDone = false): number {
-    const newToDoItem = new ToDoItem(this.nextId++, task, dueDate, isDone);
-    this.itemMap.set(newToDoItem.id, newToDoItem);
-    return newToDoItem.id;
-  }
-
-  getItemById(id: number): ToDoItem | void {
-    const foundItem = this.itemMap.get(id);
-    if (!foundItem) {
-      console.log(`No such item: ${id}`);
+  private db!: sqlite.Database;
+  constructor(public author: string) {
+    try {
+      this.db = new Database(`src/db/${this.author}.sqlite3`);
+      dbHandler.createMainTable(this.db);
+    } catch (error) {
+      console.error("Failed to connect to database:", error);
     }
-    return foundItem;
   }
 
-  getAllItems(includeDone = false): ToDoItem[] {
-    return [...this.itemMap.values()].filter(
-      (item) => includeDone || !item.isDone,
-    );
+  addItem(
+    task: string,
+    dueDate: string,
+    isDone = false,
+  ): Promise<number | bigint> {
+    const dateString = dueDate == "" ? "No due date" : dueDate;
+    return dbHandler.add(this.db, task, dateString, isDone);
   }
 
-  markAsDone(id: number) {
-    const toDoItem: ToDoItem | void = this.getItemById(id);
-    toDoItem ? (toDoItem.isDone = true) : toDoItem;
+  getItemById(id: number): Promise<ToDoItem> {
+    return dbHandler.getItemById(this.db, id);
   }
 
-  markAsNotDone(id: number) {
-    const toDoItem: ToDoItem | void = this.getItemById(id);
-    toDoItem ? (toDoItem.isDone = false) : toDoItem;
+  async getDoneItems(): Promise<ToDoItem[]> {
+    return await dbHandler.getDone(this.db);
   }
 
-  removeDoneItems() {
-    this.itemMap.forEach((item) =>
-      item.isDone ? this.itemMap.delete(item.id) : item,
-    );
+  async getAllItems(includeDone = false): Promise<ToDoItem[]> {
+    return await dbHandler.getAll(this.db, includeDone);
   }
 
-  markImportant(id: number) {
-    const toDoItem: ToDoItem | void = this.getItemById(id);
-    toDoItem ? (toDoItem.isImportant = true) : toDoItem;
+  async markAsDone(id: number): Promise<void> {
+    await dbHandler.markAsDone(this.db, id);
   }
 
-  getImportant(): ToDoItem[] {
-    return [...this.itemMap.values()].filter((item) => item.isImportant);
+  async markAsNotDone(id: number): Promise<void> {
+    await dbHandler.markAsNotDone(this.db, id);
+  }
+
+  async removeDoneItems(): Promise<void> {
+    await dbHandler.removeDoneItems(this.db);
+  }
+
+  async markImportant(id: number): Promise<void> {
+    await dbHandler.markImportant(this.db, id);
+  }
+
+  async getImportant(): Promise<ToDoItem[]> {
+    return await dbHandler.getImportant(this.db);
   }
 }

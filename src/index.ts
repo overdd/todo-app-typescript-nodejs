@@ -2,7 +2,6 @@ import select from "@inquirer/select";
 import { ToDoApplication } from "./app/toDoApplication";
 import input from "@inquirer/input";
 import chechbox from "@inquirer/checkbox";
-import { parseDate } from "./support/helper";
 import { CHOICES, MESSAGES } from "./support/constants";
 
 let toDoApplication: ToDoApplication;
@@ -10,28 +9,26 @@ let intake: string;
 let intakeArray: string[];
 let intake2: string;
 
-function displayToDoList(): void {
+async function displayToDoList(): Promise<void> {
   if (toDoApplication) {
     console.log(
-      `${
-        toDoApplication.toDoCollection.author
-      }'s ToDo app. Things to be done: ${
-        toDoApplication.toDoCollection.getAllItems().length
+      `${toDoApplication.toDoCollection.author}'s ToDo app. Tasks to be done: ${
+        (await toDoApplication.toDoCollection.getAllItems()).length
       }`,
     );
-    toDoApplication.toDoCollection.getAllItems(true).length === 0
+    (await toDoApplication.toDoCollection.getAllItems(true)).length === 0
       ? toDoApplication.toDoCollection
       : console.log(
-          toDoApplication.toDoCollection
-            .getAllItems(true)
-            .forEach((item) => item.printItem()),
+          (await toDoApplication.toDoCollection.getAllItems()).forEach((item) =>
+            item.printItem(),
+          ),
         );
   } else {
     console.log("ToDo application is not created, please create one.");
   }
 }
 
-async function prompt(): Promise<void> {
+async function prompt() {
   console.clear();
   displayToDoList();
   const answer = await select({
@@ -48,23 +45,22 @@ async function prompt(): Promise<void> {
       {
         ...CHOICES.markDone,
         disabled:
-          toDoApplication?.toDoCollection?.getAllItems(false)?.length > 0
+          (await toDoApplication?.toDoCollection?.getAllItems(false))?.length >
+          0
             ? false
             : true,
       },
       {
         ...CHOICES.markNotDone,
         disabled:
-          toDoApplication?.toDoCollection?.getAllItems(true)?.length -
-            toDoApplication?.toDoCollection?.getAllItems(false)?.length >
-          0
+          (await toDoApplication?.toDoCollection?.getDoneItems())?.length > 0
             ? false
             : true,
       },
       {
         ...CHOICES.markImportant,
         disabled:
-          toDoApplication?.toDoCollection?.getAllItems(true)?.length -
+          (await toDoApplication?.toDoCollection?.getAllItems(true))?.length -
             toDoApplication?.toDoCollection?.getImportant?.length !=
             0 && toDoApplication?.toDoCollection?.author
             ? false
@@ -73,9 +69,7 @@ async function prompt(): Promise<void> {
       {
         ...CHOICES.clear,
         disabled:
-          toDoApplication?.toDoCollection?.getAllItems(true)?.length -
-            toDoApplication?.toDoCollection?.getAllItems(false)?.length >
-          0
+          (await toDoApplication?.toDoCollection?.getDoneItems())?.length > 0
             ? false
             : true,
       },
@@ -88,7 +82,7 @@ async function prompt(): Promise<void> {
       },
     ],
   });
-
+  
   switch (answer) {
     case "start":
       intake = await input({ message: MESSAGES.WHATSYOURNAME });
@@ -97,16 +91,18 @@ async function prompt(): Promise<void> {
     case "add":
       intake = await input({ message: MESSAGES.DESCRIBETASK });
       intake2 = await input({ message: MESSAGES.WHATSDUEDATE });
-      toDoApplication.toDoCollection.addItem(intake, parseDate(intake2));
+      toDoApplication.toDoCollection.addItem(intake, intake2);
       break;
     case "markdone":
       intakeArray = await chechbox({
         message: MESSAGES.MARKDONE,
         choices: [
-          ...toDoApplication.toDoCollection.getAllItems().map((todoItem) => ({
-            name: todoItem.task,
-            value: todoItem.id.toString(),
-          })),
+          ...(await toDoApplication.toDoCollection.getAllItems()).map(
+            (todoItem) => ({
+              name: todoItem.task,
+              value: todoItem.id.toString(),
+            }),
+          ),
         ],
       });
       intakeArray.forEach((item) =>
@@ -117,12 +113,12 @@ async function prompt(): Promise<void> {
       intakeArray = await chechbox({
         message: MESSAGES.MARKNOTDONE,
         choices: [
-          ...toDoApplication.toDoCollection
-            .getAllItems(true)
-            .map((todoItem) => ({
+          ...(await toDoApplication.toDoCollection.getDoneItems()).map(
+            (todoItem) => ({
               name: todoItem.task,
               value: todoItem.id.toString(),
-            })),
+            }),
+          ),
         ],
       });
       intakeArray.forEach((item) =>
@@ -133,10 +129,12 @@ async function prompt(): Promise<void> {
       intakeArray = await chechbox({
         message: MESSAGES.MARKIMPORTANT,
         choices: [
-          ...toDoApplication.toDoCollection.getAllItems().map((todoItem) => ({
-            name: todoItem.task,
-            value: todoItem.id.toString(),
-          })),
+          ...(await toDoApplication.toDoCollection.getAllItems()).map(
+            (todoItem) => ({
+              name: todoItem.task,
+              value: todoItem.id.toString(),
+            }),
+          ),
         ],
       });
       intakeArray.forEach((item) =>
